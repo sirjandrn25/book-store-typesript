@@ -1,7 +1,7 @@
-import BookList from '../components/books/BookList'
 import SearchBook from '../components/books/SearchBook'
 import add_icon from '../images/add.svg'
 import { Link } from 'react-router-dom'
+import BookTable from '../components/books/BookTable'
 
 const Book = () => {
   return (
@@ -12,7 +12,7 @@ const Book = () => {
         </Link>
       </div>
       <SearchBook />
-      <BookList />
+      <BookTable />
     </div>
   )
 }

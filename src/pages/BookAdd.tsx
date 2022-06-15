@@ -1,5 +1,7 @@
+import AddNewBook from '../components/books/AddNewBook'
+
 const BookAdd = () => {
-  return <h1>Book Add Page</h1>
+  return <AddNewBook />
 }
 
 export default BookAdd

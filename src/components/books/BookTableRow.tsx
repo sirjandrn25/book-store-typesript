@@ -5,15 +5,15 @@ import { UseBookContext } from '../../store/book-context'
 
 const BookTableRow: React.FC<{ book: Book; handleRemoveBook: (id: number) => void }> = (props) => {
   return (
-    <tr>
-      <td className='capitalize font-medium text-gray-700'>{props.book.title}</td>
-      <td>{props.book.category}</td>
-      <td>{props.book.pages}</td>
-      <td>${props.book.price}</td>
-      <td>{props.book.quantity}</td>
-      <td>{props.book.author}</td>
-      <td>{props.book.issue_date}</td>
-      <td>
+    <tr className='border-2 text-center'>
+      <td className='capitalize font-medium text-gray-700 border-2'>{props.book.title}</td>
+      <td className='border-2 capitalize'>{props.book.category}</td>
+      <td className='border-2'>{props.book.pages}</td>
+      <td className='border-2'>${props.book.price}</td>
+      <td className='border-2'>{props.book.quantity}</td>
+      <td className='border-2 capitalize'>{props.book.author}</td>
+      <td className='border-2'>{props.book.issue_date}</td>
+      <td className='border-2'>
         <button
           onClick={(event) => props.handleRemoveBook(props.book.id)}
           className='btn btn-circle bg-red-500 border-none text-white '>

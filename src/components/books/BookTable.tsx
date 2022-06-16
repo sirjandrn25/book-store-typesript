@@ -2,17 +2,42 @@ import edit_icon from '../../images/editing.png'
 import { Link } from 'react-router-dom'
 import BookTableRow from './BookTableRow'
 import useHttp from '../../hooks/useHttp'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { UseBookContext } from '../../store/book-context'
 import TableHeadCell from './TableHeadCell'
+import { Book } from '../../models/book'
 
 let config = {
   url: 'http://localhost:4000/books',
   method: 'get',
 }
+
+const sortBookList = (books: Book[], label: string, sort_order: string) => {
+  // console.log(books)
+  if (label) {
+    if (typeof books[0][label] === 'number') {
+      if (sort_order === 'asc') {
+        return books.sort((a, b) => a[label] - b[label])
+      } else {
+        return books.sort((a, b) => b[label] - a[label])
+      }
+    } else {
+      if (sort_order === 'asc') {
+        return books.sort((a, b) => a[label].localeCompare(b[label]))
+      } else {
+        return books.sort((a, b) => b[label].localeCompare(a[label]))
+      }
+    }
+  }
+  return books
+}
+
 const BookTable = () => {
   const { sendHttpRequest } = useHttp()
   const { getAllBooks, books, removeBook } = UseBookContext()
+  const [sortLabel, setSortLabel] = useState('')
+  const [sortOrder, setSortOrder] = useState('')
+
   useEffect(() => {
     const response = sendHttpRequest(config)
     response.then((data) => {
@@ -34,39 +59,67 @@ const BookTable = () => {
       }
     })
   }
+  let sortedBooks = books
+
+  if (sortLabel) {
+    sortedBooks = sortBookList(books.slice(), sortLabel, sortOrder)
+  }
+
+  console.log(books)
+  // console.log(sortedBooks)
+  const sortHandler = (sort_label: string) => {
+    if (sort_label === sortLabel) {
+      if (sortOrder === 'desc') {
+        setSortLabel('')
+        setSortOrder('')
+      } else {
+        setSortOrder('desc')
+      }
+    } else {
+      setSortLabel(sort_label)
+      setSortOrder('asc')
+    }
+  }
 
   let renderContent: any = <p>No Books Found</p>
-  if (books.length) {
-    renderContent = books.map((book) => <BookTableRow book={book} handleRemoveBook={handleRemoveBook} key={book.id} />)
+  if (sortedBooks.length) {
+    renderContent = sortedBooks.map((book) => (
+      <BookTableRow book={book} handleRemoveBook={handleRemoveBook} key={book.id} />
+    ))
   }
 
   return (
-    <table className=' w-full'>
-      <thead className='bg-gray-100'>
-        {/* <TableHead /> */}
-        <tr>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
-            <TableHeadCell label='title' />
-          </th>
-
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
-            <TableHeadCell label="" />
-          </th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
-          <div className='w-full flex flex-row justify-between items-center'>
-              <span>Pages</span>
-              <span>>></span>
-            </div>
-          </th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Price</th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Quantity</th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Author</th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Issue Date</th>
-          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Action</th>
-        </tr>
-      </thead>
-      <tbody>{renderContent}</tbody>
-    </table>
+    <>
+      <table className=' w-full '>
+        <thead className='bg-gray-100 shadow-sm'>
+          {/* <TableHead /> */}
+          <tr>
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='title' />
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='category' />
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='pages' />
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='price' />
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='quantity' />
+            <TableHeadCell sortType={{ label: sortLabel, order: sortOrder }} sortFunc={sortHandler} label='author' />
+            <TableHeadCell
+              sortType={{ label: sortLabel, order: sortOrder }}
+              sortFunc={sortHandler}
+              label='issue_date'
+            />
+            <th className='text-md p-2 border-2 border-purple-200 text-gray-70'>Actions</th>
+          </tr>
+        </thead>
+        <tbody>{renderContent}</tbody>
+      </table>
+      <div className='flex flex-row my-3 items-center'>
+        <select className='select select-bordered select-sm w-[80px]'>
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={30}>30</option>
+          <option value={40}>40</option>
+        </select>
+        <span className='ml-3 text-purple-600'>show 6 out of 10</span>
+      </div>
+    </>
   )
 }
 

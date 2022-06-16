@@ -49,6 +49,16 @@
       "quantity": 40,
       "issue_date": "2022-06-30",
       "id": 5
+    },
+    {
+      "title": "new book 1",
+      "pages": 40,
+      "price": 500,
+      "author": "manish bhujel",
+      "category": "ghost",
+      "quantity": 10,
+      "issue_date": "1999-12-16",
+      "id": 6
     }
   ],
   "category": [

@@ -1,13 +1,18 @@
 import { Outlet } from 'react-router-dom'
-import { BookContextProvider } from './components/store/book-context'
+import { BookContextProvider } from './store/book-context'
+import Notification from './components/UI/Notification'
+import ContextRootProvider from './store'
 
 export default function App() {
   return (
-    <div className='h-screen w-screen flex flex-col justify-center items-center'>
+    <div className='h-screen w-screen relative'>
       {/* <h1 className='font-bold underline text-3xl'>Book Store App</h1> */}
-      <BookContextProvider>
-        <Outlet />
-      </BookContextProvider>
+      <ContextRootProvider>
+        <div className='w-[1100px] absolute top-[120px] left-[200px]'>
+          <Outlet />
+        </div>
+        <Notification />
+      </ContextRootProvider>
     </div>
   )
 }

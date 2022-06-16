@@ -1,18 +1,32 @@
-import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { UseBookContext } from '../store/book-context'
+import { useEffect, useState } from 'react'
 import InputField from '../UI/InputField'
+import React from 'react'
+
+import { Link } from 'react-router-dom'
 import SelectField from '../UI/SelectField'
-import Book from '../../pages/Book'
+
+import { Book } from '../../models/book'
+import useHttp from '../../hooks/useHttp'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 const authorOptions = ['sukra raj tamang', 'sirja tamang', 'suraj rai', 'manish bhujel', 'kumar shrestha']
-
 const categoryOptions = ['love story', 'ghost', 'music', 'drama', 'science']
 
-const EditBook = () => {
-  const { books, editBook } = UseBookContext()
-  const { bookId } = useParams() as any
-  const [bookState, setBookState] = useState(books.find((book) => book.id === +bookId))
+type saveBookFunc = (book: Book) => void
+
+type configType = {
+  url: string
+  method?: string
+  data?: object
+}
+
+const BookForm: React.FC<{ initialBook: Book; header: string; config: configType }> = (props) => {
+  const [bookState, setBookState] = useState(props.initialBook)
+  const { status, error, sendHttpRequest } = useHttp()
+  const navigate = useNavigate()
+  useEffect(() => {
+    setBookState(props.initialBook)
+  }, [props.initialBook])
 
   const inputChangeHanlder = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.name
@@ -36,20 +50,38 @@ const EditBook = () => {
       }
     })
   }
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // console.log(bookState)
-    console.log(bookState)
-    editBook(bookState)
+
+    const book_data = {
+      title: bookState.title,
+      pages: +bookState.pages,
+      price: +bookState.price,
+      author: bookState.author,
+      category: bookState.category,
+      quantity: +bookState.quantity,
+      issue_date: bookState.issue_date,
+    }
+    props.config['data'] = book_data
+    const response = sendHttpRequest(props.config)
+    response.then((resp) => {
+      if (resp) {
+        setTimeout(() => {
+          navigate('/', { replace: true })
+        }, 1000)
+      }
+    })
+    // props.saveFunc(book_data)
   }
 
   return (
-    <div className='card w-[900px] bg-base-100 shadow'>
+    <div className='card w-full bg-base-100 shadow'>
       <div className='card-body'>
         <Link to={'/'} className='btn btn-link'>
           Back To Book List
         </Link>
-        <div className='card-title text-2xl font-bold text-purple-600'>Add New Book</div>
+        <div className='card-title text-2xl font-bold text-purple-600 capitalize'>{props.header}</div>
         <form onSubmit={handleSubmit} action=''>
           <div className='grid grid-cols-6 gap-2 w-full'>
             <InputField
@@ -70,7 +102,7 @@ const EditBook = () => {
             <InputField
               type='number'
               handleChange={inputChangeHanlder}
-              label='page'
+              label='pages'
               placeholder='enter number of pages in book'
               value={bookState.pages}
               className='my-2 col-span-2'
@@ -108,11 +140,11 @@ const EditBook = () => {
             />
           </div>
 
-          <button className='btn btn-primary mt-3 w-[120px]'>Add New</button>
+          <button className='btn btn-primary mt-3 w-[120px]'>save</button>
         </form>
       </div>
     </div>
   )
 }
 
-export default EditBook
+export default BookForm

@@ -1,46 +1,71 @@
 import edit_icon from '../../images/editing.png'
 import { Link } from 'react-router-dom'
 import BookTableRow from './BookTableRow'
-import { Book } from '../../models/book'
-import { UseBookContext } from '../store/book-context'
+import useHttp from '../../hooks/useHttp'
+import { useEffect } from 'react'
+import { UseBookContext } from '../../store/book-context'
+import TableHeadCell from './TableHeadCell'
 
-const book1 = new Book('music is life', 122, 24.56, 'sukra tamang', 'music', 12, new Date('1992-05-05'))
-const book2 = new Book('tourism places', 60, 88.56, 'suraj rai', 'tourism', 20, new Date('2021-05-22'))
-const book3 = new Book(
-  'typescript for begginers',
-  255,
-  886.45,
-  'sirjan tamang',
-  'programming',
-  24,
-  new Date('2020-10-12')
-)
-// const books: Book[] = [book1, book2, book3]
-
+let config = {
+  url: 'http://localhost:4000/books',
+  method: 'get',
+}
 const BookTable = () => {
-  const { books, removeBook } = UseBookContext()
+  const { sendHttpRequest } = useHttp()
+  const { getAllBooks, books, removeBook } = UseBookContext()
+  useEffect(() => {
+    const response = sendHttpRequest(config)
+    response.then((data) => {
+      if (data) {
+        getAllBooks(data)
+      }
+    })
+  }, [])
+
+  const handleRemoveBook = (book_id: number) => {
+    const removeConfig = {
+      url: `http://localhost:4000/books/${book_id}`,
+      method: 'delete',
+    }
+    const response = sendHttpRequest(removeConfig)
+    response.then((resp) => {
+      if (resp) {
+        removeBook(book_id)
+      }
+    })
+  }
+
+  let renderContent: any = <p>No Books Found</p>
+  if (books.length) {
+    renderContent = books.map((book) => <BookTableRow book={book} handleRemoveBook={handleRemoveBook} key={book.id} />)
+  }
+
   return (
-    <table className='table w-full'>
-      <thead>
+    <table className=' w-full'>
+      <thead className='bg-gray-100'>
         {/* <TableHead /> */}
         <tr>
-          <th>Title</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
+            <TableHeadCell label='title' />
+          </th>
 
-          <th>Category</th>
-          <th>Pages</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Author</th>
-          <th>Issue Date</th>
-          <th>Action</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
+            <TableHeadCell label="" />
+          </th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>
+          <div className='w-full flex flex-row justify-between items-center'>
+              <span>Pages</span>
+              <span>>></span>
+            </div>
+          </th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Price</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Quantity</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Author</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Issue Date</th>
+          <th className='text-md p-2 border-2 border-purple-200 text-gray-70 '>Action</th>
         </tr>
       </thead>
-      <tbody>
-        {books.map((book) => (
-          <BookTableRow book={book} handleRemoveBook={removeBook} key={book.id} />
-        ))}
-        {/* <BookTableRow book={book1} /> */}
-      </tbody>
+      <tbody>{renderContent}</tbody>
     </table>
   )
 }

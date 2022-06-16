@@ -1,0 +1,74 @@
+{
+  "books": [
+    {
+      "title": "music is life edit",
+      "pages": 24,
+      "price": 245,
+      "author": "sukra raj tamang",
+      "category": "music",
+      "quantity": 4,
+      "issue_date": "2020-04-06",
+      "id": 1
+    },
+    {
+      "id": 2,
+      "title": "typescript for beginners",
+      "price": 45.46,
+      "category": "programming",
+      "quantity": 4,
+      "pages": 24,
+      "author": "sirjan tamang",
+      "issue_date": "2020-04-06"
+    },
+    {
+      "title": "good life",
+      "pages": 40,
+      "price": 245,
+      "author": "suraj rai",
+      "category": "drama",
+      "quantity": 50,
+      "issue_date": "2022-06-21",
+      "id": 3
+    },
+    {
+      "title": "jokes is good for health",
+      "pages": 40,
+      "price": 50,
+      "author": "manish bhujel",
+      "category": "drama",
+      "quantity": 4,
+      "issue_date": "2022-06-13",
+      "id": 4
+    },
+    {
+      "title": "good film edit",
+      "pages": 40,
+      "price": 40,
+      "author": "sukra raj tamang",
+      "category": "love story",
+      "quantity": 40,
+      "issue_date": "2022-06-30",
+      "id": 5
+    }
+  ],
+  "category": [
+    {
+      "id": 1,
+      "c_name": "music"
+    },
+    {
+      "id": 2,
+      "c_name": "programming"
+    }
+  ],
+  "author": [
+    {
+      "id": 1,
+      "fullName": "sirjan tamang"
+    },
+    {
+      "id": 2,
+      "fullName": "sukra tamang"
+    }
+  ]
+}

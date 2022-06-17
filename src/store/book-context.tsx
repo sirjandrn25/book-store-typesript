@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import { Book } from '../models/book'
 
 type bookContextObj = {
@@ -7,6 +7,10 @@ type bookContextObj = {
   removeBook: (id: number) => void
 
   getAllBooks: (book: Book[]) => void
+}
+
+type bookContextProviderProps = {
+  children: ReactNode
 }
 
 const BookContext = createContext<bookContextObj>({
@@ -20,7 +24,7 @@ const BookContext = createContext<bookContextObj>({
 //   children:React.No
 // }
 
-export const BookContextProvider: React.FC = (props) => {
+export const BookContextProvider = (props: bookContextProviderProps) => {
   const [books, setBooks] = useState<Book[]>([])
 
   const getAllBooks = (new_books: Book[]) => {

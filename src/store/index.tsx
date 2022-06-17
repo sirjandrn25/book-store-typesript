@@ -1,10 +1,18 @@
+// import { ReactNode } from 'react'
 import { BookContextProvider } from './book-context'
 import { UIContextProvider } from './ui-context'
+import { CategoryContextProvider } from './category-context'
 
-const ContextRootProvider: React.FC = (props) => {
+type propsTypes = {
+  children: React.ReactNode
+}
+
+const ContextRootProvider = (props: propsTypes) => {
   return (
     <BookContextProvider>
-      <UIContextProvider>{props.children}</UIContextProvider>
+      <CategoryContextProvider>
+        <UIContextProvider>{props.children}</UIContextProvider>
+      </CategoryContextProvider>
     </BookContextProvider>
   )
 }

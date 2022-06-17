@@ -3,14 +3,17 @@ import InputField from '../UI/InputField'
 import React from 'react'
 
 import { Link } from 'react-router-dom'
-import SelectField from '../UI/SelectField'
+// import SelectField from '../UI/SelectField'
+import { UseCategoryContext } from '../../store/category-context'
 
 import { Book } from '../../models/book'
 import useHttp from '../../hooks/useHttp'
-import { Navigate, useNavigate } from 'react-router-dom'
+import useInput from '../../hooks/useInput'
+import { useNavigate } from 'react-router-dom'
+import Select from '../UI/Select'
+import { UseUIContext } from '../../store/ui-context'
 
 const authorOptions = ['sukra raj tamang', 'sirja tamang', 'suraj rai', 'manish bhujel', 'kumar shrestha']
-const categoryOptions = ['love story', 'ghost', 'music', 'drama', 'science']
 
 type saveBookFunc = (book: Book) => void
 
@@ -19,49 +22,102 @@ type configType = {
   method?: string
   data?: object
 }
+const isEmpty = (value: string) => (value ? '' : 'this field may not be empty')
+const isNotSelect = (value: string) => (value ? '' : 'please select the field')
 
-const BookForm: React.FC<{ initialBook: Book; header: string; config: configType }> = (props) => {
-  const [bookState, setBookState] = useState(props.initialBook)
+const BookForm: React.FC<{ initialBook?: Book; header: string; config: configType }> = (props) => {
+  const { modalOpenHandler } = UseUIContext()
+  const { categories } = UseCategoryContext()
+
+  const {
+    inputState: titleState,
+    inputChangeHandler: titleChangeHandler,
+    error: titleError,
+    inputBlurHandler: titleBlurHandler,
+  } = useInput(isEmpty)
+  const {
+    inputState: categoryState,
+    inputChangeHandler: categoryChangeHandler,
+    error: categoryError,
+    inputBlurHandler: categoryBlurHandler,
+  } = useInput(isNotSelect)
+  const {
+    inputState: pagesState,
+    inputChangeHandler: pagesChangeHandler,
+    error: pagesError,
+    inputBlurHandler: pagesBlurHandler,
+  } = useInput(isEmpty)
+  const {
+    inputState: priceState,
+    inputChangeHandler: priceChangeHandler,
+    error: priceError,
+    inputBlurHandler: priceBlurHandler,
+  } = useInput(isEmpty)
+  const {
+    inputState: quantityState,
+    inputChangeHandler: quantityChangeHandler,
+    error: quantityError,
+    inputBlurHandler: quantityBlurHandler,
+  } = useInput(isEmpty)
+  const {
+    inputState: authorState,
+    inputChangeHandler: authorChangeHandler,
+    error: authorError,
+    inputBlurHandler: authorBlurHandler,
+  } = useInput(isNotSelect)
+  const {
+    inputState: issueDateState,
+    inputChangeHandler: issueDateChangeHandler,
+    error: issueDateError,
+    inputBlurHandler: issueDateBlurHandler,
+  } = useInput(isEmpty)
+
   const { sendHttpRequest } = useHttp()
   const navigate = useNavigate()
   useEffect(() => {
-    setBookState(props.initialBook)
+    // setBookState(props.initialBook)
+
+    if (props.initialBook) {
+      titleChangeHandler(props.initialBook.title)
+      pagesChangeHandler(props.initialBook.pages.toString())
+      priceChangeHandler(props.initialBook.price.toString())
+      quantityChangeHandler(props.initialBook.quantity.toString())
+      categoryChangeHandler(props.initialBook.category)
+      authorChangeHandler(props.initialBook.author)
+      issueDateChangeHandler(props.initialBook.issue_date)
+    }
   }, [props.initialBook])
 
-  const inputChangeHanlder = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const name = event.target.name
-    const value = event.target.value
-
-    setBookState((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      }
-    })
-  }
-
-  const selectChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const name = event.target.name
-    const value = event.target.value
-    setBookState((prevState) => {
-      return {
-        ...prevState,
-        [name]: value,
-      }
-    })
-  }
+  const formValid =
+    titleState.inputValid &&
+    pagesState.inputValid &&
+    priceState.inputValid &&
+    authorState.inputValid &&
+    categoryState.inputValid &&
+    issueDateState.inputValid &&
+    quantityState.inputValid
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!formValid) {
+      titleBlurHandler()
+      pagesBlurHandler()
+      categoryBlurHandler()
+      issueDateBlurHandler()
+      authorBlurHandler()
+      priceBlurHandler()
+      quantityBlurHandler()
+      return
+    }
 
     const book_data = {
-      title: bookState.title,
-      pages: +bookState.pages,
-      price: +bookState.price,
-      author: bookState.author,
-      category: bookState.category,
-      quantity: +bookState.quantity,
-      issue_date: bookState.issue_date,
+      title: titleState.value,
+      pages: +pagesState.value,
+      price: +priceState.value,
+      author: authorState.value,
+      category: categoryState.value,
+      quantity: +quantityState.value,
+      issue_date: issueDateState.value,
     }
     props.config['data'] = book_data
     const response = sendHttpRequest(props.config)
@@ -83,61 +139,94 @@ const BookForm: React.FC<{ initialBook: Book; header: string; config: configType
         </Link>
         <div className='card-title text-2xl font-bold text-purple-600 capitalize'>{props.header}</div>
         <form onSubmit={handleSubmit} action=''>
-          <div className='grid grid-cols-6 gap-2 w-full'>
+          <div className='grid grid-cols-2 gap-2 w-full my-2 items-center'>
             <InputField
-              handleChange={inputChangeHanlder}
-              value={bookState.title}
+              handleChange={titleChangeHandler}
+              value={titleState.value}
               type='text'
               label='title'
               placeholder='Enter Book Title'
-              className='my-2 col-span-3'
+              blurHandler={titleBlurHandler}
+              error={titleError}
             />
-            <SelectField
-              label='category'
-              handleChange={selectChangeHandler}
-              value={bookState.category}
-              className='my-2 col-span-3'
-              options={categoryOptions}
-            />
+            <div className='w-full'>
+              <label htmlFor='category' className='label-text text-lg text-medium capitalize'>
+                Category
+              </label>
+              <div className='grid grid-cols-12 items-center'>
+                <Select
+                  label='category'
+                  handleChange={categoryChangeHandler}
+                  value={categoryState.value}
+                  options={categories.map((category) => category.c_name)}
+                  blurHandler={categoryBlurHandler}
+                  className='col-span-11'
+                />
+                <span
+                  onClick={(e) => modalOpenHandler('category')}
+                  className='text-3xl font-bold text-green-400 px-2 cursor-pointer'>
+                  +
+                </span>
+              </div>
+              {categoryError && <p className='text-red-500'>{categoryError}</p>}
+            </div>
+          </div>
+          <div className='grid grid-cols-3 gap-2 w-full my-2'>
             <InputField
               type='number'
-              handleChange={inputChangeHanlder}
+              handleChange={pagesChangeHandler}
               label='pages'
               placeholder='enter number of pages in book'
-              value={bookState.pages}
-              className='my-2 col-span-2'
+              value={pagesState.value}
+              blurHandler={pagesBlurHandler}
+              error={pagesError}
             />
             <InputField
               type='number'
               label='price'
-              handleChange={inputChangeHanlder}
+              handleChange={priceChangeHandler}
               placeholder='enter book price'
-              value={bookState.price}
-              className='my-2 col-span-2'
+              value={priceState.value}
+              blurHandler={priceBlurHandler}
+              error={priceError}
             />
             <InputField
               type='number'
-              value={bookState.quantity}
-              handleChange={inputChangeHanlder}
+              value={quantityState.value}
+              handleChange={quantityChangeHandler}
               placeholder='Enter book quantity'
               label='quantity'
-              className='my-2 col-span-2'
+              blurHandler={quantityBlurHandler}
+              error={quantityError}
             />
-            <SelectField
-              value={bookState.author}
-              options={authorOptions}
-              handleChange={selectChangeHandler}
-              label='author'
-              className='my-2 col-span-3'
-            />
+          </div>
+          <div className='grid grid-cols-2 gap-2 my-2'>
             <InputField
-              value={bookState.issue_date}
+              value={issueDateState.value}
               placeholder={'choose book issue date'}
-              handleChange={inputChangeHanlder}
+              handleChange={issueDateChangeHandler}
               type='date'
               label='issue_date'
-              className='my-2 col-span-3'
+              blurHandler={issueDateBlurHandler}
+              error={issueDateError}
             />
+            <div className='w-full'>
+              <label htmlFor='author' className='label-text text-lg text-medium capitalize'>
+                Author
+              </label>
+              <div className='grid grid-cols-12 items-center'>
+                <Select
+                  label='author'
+                  handleChange={authorChangeHandler}
+                  value={authorState.value}
+                  options={authorOptions}
+                  blurHandler={authorBlurHandler}
+                  className='col-span-11'
+                />
+                <span className='text-3xl font-bold text-green-400 px-2 cursor-pointer'>+</span>
+              </div>
+              {authorError && <p className='text-red-500'>{authorError}</p>}
+            </div>
           </div>
 
           <button className='btn btn-primary mt-3 w-[120px]'>save</button>

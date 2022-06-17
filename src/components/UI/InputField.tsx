@@ -2,11 +2,13 @@
 
 type inputFieldProps = {
   value: string | number
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleChange: (value: string) => void
   placeholder: string
   label: string
-  className: string
+  className?: string
   type: string
+  blurHandler: () => void
+  error: string | boolean
 }
 
 const removeUnderScore = (value: string) => {
@@ -27,14 +29,16 @@ const InputField = (props: inputFieldProps) => {
         {removeUnderScore(props.label)}
       </label>
       <input
-        onChange={props.handleChange}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.handleChange(event.target.value)}
         value={props.value}
         name={props.label}
         id={props.label}
         type={props.type}
+        onBlur={props.blurHandler}
         className='input input-bordered input-primary w-full focus:outline-none'
         placeholder={props.placeholder}
       />
+      {props.error && <p className='text-red-500'>{props.error}</p>}
     </div>
   )
 }

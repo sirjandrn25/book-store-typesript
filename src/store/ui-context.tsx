@@ -5,6 +5,9 @@ type uiTypes = {
   status: string
   openHandler: (message: string, updateStatus: string) => void
   closeHandler: () => void
+  modalOpen: string
+  modalClose: () => void
+  modalOpenHandler: (val: string) => void
 }
 
 const UIContext = createContext<uiTypes>({
@@ -12,11 +15,19 @@ const UIContext = createContext<uiTypes>({
   status: '',
   openHandler: () => {},
   closeHandler: () => {},
+  modalOpen: '',
+  modalClose: () => {},
+  modalOpenHandler: () => {},
 })
 
-export const UIContextProvider: React.FC = (props) => {
+type uiPropsTypes = {
+  children: React.ReactNode
+}
+
+export const UIContextProvider = (props: uiPropsTypes) => {
   const [status, setStatus] = useState('')
   const [message, setMessage] = useState('')
+  const [modalOpen, setModalOpen] = useState('')
 
   const openHandler = (message: string, updateStatus: string) => {
     setMessage(message)
@@ -27,11 +38,21 @@ export const UIContextProvider: React.FC = (props) => {
     setStatus('')
   }
 
+  const modalOpenHandler = (modal: string) => {
+    setModalOpen(modal)
+  }
+  const modalClose = () => {
+    setModalOpen('')
+  }
+
   const contextObj: uiTypes = {
     message,
     status,
     openHandler,
     closeHandler,
+    modalClose,
+    modalOpenHandler,
+    modalOpen,
   }
 
   return <UIContext.Provider value={contextObj}>{props.children}</UIContext.Provider>

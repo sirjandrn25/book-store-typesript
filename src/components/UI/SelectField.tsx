@@ -2,11 +2,13 @@ import React, { ChangeEvent } from 'react'
 
 type selectFieldProps = {
   value: string | number
-  handleChange: (event: React.ChangeEvent<HTMLSelectElement>) => void
+  handleChange: (value: string) => void
 
   label: string
-  className: string
+  className?: string
   options: string[]
+  blurHandler: () => void
+  error: string | boolean
 }
 
 const removeUnderScore = (value: string) => {
@@ -26,28 +28,22 @@ const SelectField = (props: selectFieldProps) => {
       <label className='label-text text-lg text-medium capitalize' htmlFor={props.label}>
         {removeUnderScore(props.label)}
       </label>
-      {/* <input
-        onChange={props.handleChange}
-        value={props.value}
-        name={props.label}
-        id={props.label}
-        type={props.type}
-        className='input input-bordered input-primary w-full focus:outline-none'
-        placeholder={props.placeholder}
-      /> */}
+
       <select
         name={props.label}
         className='select select-primary w-full focus:outline-none'
-        onChange={props.handleChange}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => props.handleChange(event.target.value)}
         value={props.value}
+        onBlur={props.blurHandler}
         id={props.label}>
-        {props.value === '' ? <option selected>choose {props.label}</option> : null}
+        {props.value === '' ? <option value=''>choose {props.label}</option> : null}
         {props.options.map((opVal) => (
           <option value={opVal} key={opVal}>
             {opVal}
           </option>
         ))}
       </select>
+      {props.error && <p className='text-red-500'>{props.error}</p>}
     </div>
   )
 }

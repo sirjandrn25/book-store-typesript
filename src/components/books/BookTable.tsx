@@ -2,10 +2,11 @@ import edit_icon from '../../images/editing.png'
 import { Link } from 'react-router-dom'
 import BookTableRow from './BookTableRow'
 import useHttp from '../../hooks/useHttp'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { UseBookContext } from '../../store/book-context'
 import TableHeadCell from './TableHeadCell'
 import { Book } from '../../models/book'
+import SearchBook from './SearchBook'
 
 let config = {
   url: 'http://localhost:4000/books',
@@ -14,22 +15,19 @@ let config = {
 
 const sortBookList = (books: Book[], label: string, sort_order: string) => {
   // console.log(books)
-  if (label) {
-    if (typeof books[0][label] === 'number') {
-      if (sort_order === 'asc') {
-        return books.sort((a, b) => a[label] - b[label])
-      } else {
-        return books.sort((a, b) => b[label] - a[label])
-      }
+  if (typeof books[0][label] === 'number') {
+    if (sort_order === 'asc') {
+      return books.sort((a, b) => a[label] - b[label])
     } else {
-      if (sort_order === 'asc') {
-        return books.sort((a, b) => a[label].localeCompare(b[label]))
-      } else {
-        return books.sort((a, b) => b[label].localeCompare(a[label]))
-      }
+      return books.sort((a, b) => b[label] - a[label])
+    }
+  } else {
+    if (sort_order === 'asc') {
+      return books.sort((a, b) => a[label].localeCompare(b[label]))
+    } else {
+      return books.sort((a, b) => b[label].localeCompare(a[label]))
     }
   }
-  return books
 }
 
 const BookTable = () => {
@@ -37,6 +35,9 @@ const BookTable = () => {
   const { getAllBooks, books, removeBook } = UseBookContext()
   const [sortLabel, setSortLabel] = useState('')
   const [sortOrder, setSortOrder] = useState('')
+  const [search, setSearch] = useState('')
+  const [filterBy, setFilterBy] = useState('')
+  const [filterVal, setFilterVal] = useState('')
 
   useEffect(() => {
     const response = sendHttpRequest(config)
@@ -65,7 +66,13 @@ const BookTable = () => {
     sortedBooks = sortBookList(books.slice(), sortLabel, sortOrder)
   }
 
-  console.log(books)
+  if (search.length >= 3) {
+    sortedBooks = sortedBooks.filter((book) => book.title.startsWith(search))
+  }
+  if (filterBy && filterVal) {
+    sortedBooks = sortedBooks.filter((book) => book[filterBy] === filterVal)
+  }
+
   // console.log(sortedBooks)
   const sortHandler = (sort_label: string) => {
     if (sort_label === sortLabel) {
@@ -88,8 +95,28 @@ const BookTable = () => {
     ))
   }
 
+  const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value)
+  }
+
+  const filterByHandler = (event: ChangeEvent<HTMLSelectElement>) => {
+    setFilterBy(event.target.value)
+    setFilterVal('')
+  }
+  const filterValHandler = (event: ChangeEvent<HTMLSelectElement>) => {
+    setFilterVal(event.target.value)
+  }
+
   return (
     <>
+      <SearchBook
+        filterBy={filterBy}
+        filterByHandler={filterByHandler}
+        filterVal={filterVal}
+        filterValHanlder={filterValHandler}
+        search={search}
+        searchHandler={handleSearch}
+      />
       <table className=' w-full '>
         <thead className='bg-gray-100 shadow-sm'>
           {/* <TableHead /> */}

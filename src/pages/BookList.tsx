@@ -11,7 +11,7 @@ const BookList = () => {
           Add
         </Link>
       </div>
-      <SearchBook />
+
       <BookTable />
     </>
   )

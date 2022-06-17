@@ -22,7 +22,7 @@ type configType = {
 
 const BookForm: React.FC<{ initialBook: Book; header: string; config: configType }> = (props) => {
   const [bookState, setBookState] = useState(props.initialBook)
-  const { status, error, sendHttpRequest } = useHttp()
+  const { sendHttpRequest } = useHttp()
   const navigate = useNavigate()
   useEffect(() => {
     setBookState(props.initialBook)

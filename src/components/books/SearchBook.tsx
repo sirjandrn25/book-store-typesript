@@ -13,18 +13,16 @@ const authorOptions = ['sukra raj tamang', 'sirja tamang', 'suraj rai', 'manish 
 const categoryOptions = ['love story', 'ghost', 'music', 'drama', 'science']
 
 const SearchBook = (props: searchType) => {
-  console.log(props.filterBy)
-
   const getFilterOptions = () => {
     if (props.filterBy === 'category') {
       return categoryOptions.map((category) => (
-        <option value={category} className='capitalize'>
+        <option key={category} value={category} className='capitalize'>
           {category}
         </option>
       ))
     } else {
       return authorOptions.map((author) => (
-        <option value={author} className='author'>
+        <option key={author} value={author} className='author'>
           {author}
         </option>
       ))

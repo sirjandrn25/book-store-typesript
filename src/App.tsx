@@ -4,6 +4,7 @@ import Notification from './components/UI/Notification'
 import ContextRootProvider from './store'
 // import Modal from './components/UI/ModalDialogue'
 import CateogryAddForm from './components/category/CateogryAddForm'
+import AddAuthorForm from './components/author/AddAuthorForm'
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Notification />
         {/* <Modal /> */}
         <CateogryAddForm />
+        <AddAuthorForm />
       </ContextRootProvider>
     </div>
   )

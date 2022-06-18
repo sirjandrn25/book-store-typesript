@@ -12,10 +12,9 @@ import useInput from '../../hooks/useInput'
 import { useNavigate } from 'react-router-dom'
 import Select from '../UI/Select'
 import { UseUIContext } from '../../store/ui-context'
+import { UseAuthorContext } from '../../store/author-context'
 
 const authorOptions = ['sukra raj tamang', 'sirja tamang', 'suraj rai', 'manish bhujel', 'kumar shrestha']
-
-type saveBookFunc = (book: Book) => void
 
 type configType = {
   url: string
@@ -28,6 +27,7 @@ const isNotSelect = (value: string) => (value ? '' : 'please select the field')
 const BookForm: React.FC<{ initialBook?: Book; header: string; config: configType }> = (props) => {
   const { modalOpenHandler } = UseUIContext()
   const { categories } = UseCategoryContext()
+  const { authors } = UseAuthorContext()
 
   const {
     inputState: titleState,
@@ -126,6 +126,7 @@ const BookForm: React.FC<{ initialBook?: Book; header: string; config: configTyp
         setTimeout(() => {
           navigate('/', { replace: true })
         }, 1000)
+        console.log(resp)
       }
     })
     // props.saveFunc(book_data)
@@ -219,11 +220,15 @@ const BookForm: React.FC<{ initialBook?: Book; header: string; config: configTyp
                   label='author'
                   handleChange={authorChangeHandler}
                   value={authorState.value}
-                  options={authorOptions}
+                  options={authors.map((author) => author.fullName)}
                   blurHandler={authorBlurHandler}
                   className='col-span-11'
                 />
-                <span className='text-3xl font-bold text-green-400 px-2 cursor-pointer'>+</span>
+                <span
+                  onClick={(e) => modalOpenHandler('author')}
+                  className='text-3xl font-bold text-green-400 px-2 cursor-pointer'>
+                  +
+                </span>
               </div>
               {authorError && <p className='text-red-500'>{authorError}</p>}
             </div>

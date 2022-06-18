@@ -1,54 +1,44 @@
 {
   "books": [
     {
-      "title": "music is life edit",
-      "pages": 24,
-      "price": 245,
-      "author": "sukra raj tamang",
-      "category": "music",
-      "quantity": 4,
-      "issue_date": "2020-04-06",
+      "title": "life is journey",
+      "pages": 40,
+      "price": 20,
+      "author": "sirjan tamang",
+      "category": "drama",
+      "quantity": 5,
+      "issue_date": "2022-06-28",
       "id": 1
     },
     {
-      "id": 2,
-      "title": "typescript for beginners",
-      "price": 45.46,
-      "category": "programming",
-      "quantity": 4,
-      "pages": 24,
-      "author": "sirjan tamang",
-      "issue_date": "2020-04-06"
+      "title": "music is life",
+      "pages": 455,
+      "price": 25,
+      "author": "sukra tamang",
+      "category": "music",
+      "quantity": 45,
+      "issue_date": "2022-06-17",
+      "id": 2
     },
     {
-      "title": "good life",
+      "title": "jeevan kadako full",
       "pages": 40,
-      "price": 245,
-      "author": "suraj rai",
-      "category": "drama",
-      "quantity": 50,
-      "issue_date": "2022-06-21",
+      "price": 65,
+      "author": "kumar shrestha",
+      "category": "sci-fi",
+      "quantity": 58,
+      "issue_date": "2021-05-17",
       "id": 3
     },
     {
-      "title": "jokes is good for health",
-      "pages": 40,
-      "price": 50,
-      "author": "manish bhujel",
+      "title": "muna madan",
+      "pages": 45,
+      "price": 58,
+      "author": "sukra tamang",
       "category": "drama",
-      "quantity": 4,
-      "issue_date": "2022-06-13",
+      "quantity": 68,
+      "issue_date": "2018-11-17",
       "id": 4
-    },
-    {
-      "title": "good film edit",
-      "pages": 40,
-      "price": 40,
-      "author": "sukra raj tamang",
-      "category": "love story",
-      "quantity": 40,
-      "issue_date": "2022-06-30",
-      "id": 5
     }
   ],
   "categories": [
@@ -65,15 +55,19 @@
       "id": 3
     },
     {
-      "c_name": "new category",
+      "c_name": "dancing",
       "id": 4
     },
     {
-      "c_name": "new category",
+      "c_name": "drama",
       "id": 5
+    },
+    {
+      "c_name": "sci-fi",
+      "id": 6
     }
   ],
-  "author": [
+  "authors": [
     {
       "id": 1,
       "fullName": "sirjan tamang"
@@ -81,6 +75,14 @@
     {
       "id": 2,
       "fullName": "sukra tamang"
+    },
+    {
+      "fullName": "suraj rai",
+      "id": 3
+    },
+    {
+      "fullName": "kumar shrestha",
+      "id": 4
     }
   ]
 }

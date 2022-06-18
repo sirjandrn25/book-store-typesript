@@ -3,14 +3,14 @@ import InputField from '../UI/InputField'
 import { FormEvent, useState } from 'react'
 import { UseUIContext } from '../../store/ui-context'
 import { UseCategoryContext } from '../../store/category-context'
+import useHttp from '../../hooks/useHttp'
 
 const CateogryAddForm = () => {
   const [category, setCategory] = useState('')
   const { addNewCategory } = UseCategoryContext()
+  const { sendHttpRequest } = useHttp()
   const { modalOpen, modalClose, status } = UseUIContext()
-  if (status == 'success') {
-    modalClose()
-  }
+
   if (modalOpen !== 'category') return null
   const categoryChangeHandler = (val: string) => {
     setCategory(val)
@@ -19,10 +19,23 @@ const CateogryAddForm = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    addNewCategory(category)
+    // addNewCategory(category)
+    const config = {
+      url: 'http://localhost:4000/categories',
+      method: 'post',
+      data: { c_name: category },
+    }
+    const response = sendHttpRequest(config)
+    response.then((data) => {
+      if (data) {
+        addNewCategory(data)
+        modalClose()
+      }
+    })
   }
   return (
-    <Modal onClose={() => {}}>
+    <Modal>
+      <h1>Add New Category</h1>
       <form action='' onSubmit={handleSubmit}>
         <InputField
           type='text'

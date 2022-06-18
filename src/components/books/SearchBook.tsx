@@ -1,4 +1,6 @@
 import React, { ChangeEvent } from 'react'
+import { UseCategoryContext } from '../../store/category-context'
+import { UseAuthorContext } from '../../store/author-context'
 
 type searchType = {
   search: string
@@ -9,21 +11,21 @@ type searchType = {
   filterValHanlder: (event: ChangeEvent<HTMLSelectElement>) => void
 }
 
-const authorOptions = ['sukra raj tamang', 'sirja tamang', 'suraj rai', 'manish bhujel', 'kumar shrestha']
-const categoryOptions = ['love story', 'ghost', 'music', 'drama', 'science']
-
 const SearchBook = (props: searchType) => {
+  const { categories } = UseCategoryContext()
+  const { authors } = UseAuthorContext()
+
   const getFilterOptions = () => {
     if (props.filterBy === 'category') {
-      return categoryOptions.map((category) => (
-        <option key={category} value={category} className='capitalize'>
-          {category}
+      return categories.map((category) => (
+        <option key={category.c_name} value={category.c_name} className='capitalize'>
+          {category.c_name}
         </option>
       ))
     } else {
-      return authorOptions.map((author) => (
-        <option key={author} value={author} className='author'>
-          {author}
+      return authors.map((author) => (
+        <option key={author.fullName} value={author.fullName} className='author'>
+          {author.fullName}
         </option>
       ))
     }

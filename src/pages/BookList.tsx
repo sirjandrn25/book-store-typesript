@@ -6,10 +6,6 @@ import { UseCategoryContext } from '../store/category-context'
 import { useEffect } from 'react'
 
 const BookList = () => {
-  const { fetchAllCategories } = UseCategoryContext()
-  useEffect(() => {
-    fetchAllCategories()
-  }, [])
   return (
     <>
       <div className='py-3 flex row justify-start border-b-2'>

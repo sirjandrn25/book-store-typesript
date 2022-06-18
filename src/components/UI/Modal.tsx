@@ -6,7 +6,6 @@ import { UseUIContext } from '../../store/ui-context'
 type modalPropsType = {
   children: React.ReactNode
   //   open: boolean
-  onClose: () => void
 }
 
 const Modal = (props: modalPropsType) => {

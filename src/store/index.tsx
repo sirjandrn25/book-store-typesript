@@ -2,6 +2,7 @@
 import { BookContextProvider } from './book-context'
 import { UIContextProvider } from './ui-context'
 import { CategoryContextProvider } from './category-context'
+import { AuthorContextProvider } from './author-context'
 
 type propsTypes = {
   children: React.ReactNode
@@ -10,9 +11,11 @@ type propsTypes = {
 const ContextRootProvider = (props: propsTypes) => {
   return (
     <BookContextProvider>
-      <CategoryContextProvider>
-        <UIContextProvider>{props.children}</UIContextProvider>
-      </CategoryContextProvider>
+      <AuthorContextProvider>
+        <CategoryContextProvider>
+          <UIContextProvider>{props.children}</UIContextProvider>
+        </CategoryContextProvider>
+      </AuthorContextProvider>
     </BookContextProvider>
   )
 }
